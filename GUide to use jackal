@@ -1,0 +1,31 @@
+Guide to use Jackal
+
+1- Build and source 
+ cd jackal_ws; catkin_make; source devel/setup.bash
+ 
+2- rosrun
+
+3- Launch the jackal 
+
+DO that 
+
+In terminal 1 :
+
+roslaunch jackal_gazebo jackal_world.launch config:=front_laser gui:=false
+
+In terminal 2 :
+
+roslaunch jackal_viz view_robot.launch
+
+-----------or-------------
+
+roslaunch jackal_gazebo jackal_world.launch
+4- run the joy node
+
+rosrun joy joy_node 
+
+5-  run the plugin
+
+rosrun advisoring jackalteleop.py
+
+6- having fun
