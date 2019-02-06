@@ -27,5 +27,10 @@ rosrun joy joy_node
 5-  run the plugin
 
 rosrun advisoring jackalteleop.py
+---------------------------- easy way to use jackal ----------------------
 
-6- having fun
+1 - rosrun
+
+2- roslaunch advisoring jackal_run.launch 
+
+3- done.
