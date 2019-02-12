@@ -26,10 +26,10 @@ class Jackal():
         self._tolerance = tolerance
         self._odomTopic = odom_topic
         self._cmd_velTopic = cmd_vel_topic
-        # self.pose = Pose()
         self.rate = rospy.Rate(10)
         self._pose = [0, 0, 0]
         self.goal_pose = [0, 0]
+        self._pi = 3.141592
        
         
         #inputs
@@ -52,30 +52,35 @@ class Jackal():
     def linear_vel(self, goal_pose, constant=1.5):
         return constant * self.distance(self.goal_pose, self._pose)
     
-    def steering_angle(self, goal_pose):
-        return atan2(self.goal_pose[1] - self._pose[1], self.goal_pose[0] - self._pose[0])
+   # def steering_angle(self, goal_pose):
+    #    return atan2(self.goal_pose[1] - self._pose[1], self.goal_pose[0] - self._pose[0])
 
-    def angular_vel(self, goal_pose, constant=6):
-        return constant * (self.steering_angle(self.goal_pose))
+    #def angular_vel(self, goal_pose, constant=6):
+     #   return constant * (self.steering_angle(self.goal_pose))
     
     def move2goal(self):
         vel_msg = Twist()
 
+        teta = atan2(self.goal_pose[1] - self._pose[1], self.goal_pose[0] - self._pose[0])
+        erroAngle = (teta - (self._pose[2]))
+
         if self.distance(self.goal_pose , self._pose) >= self._tolerance:
             
-            # Porportional controller.  
-            # https://en.wikipedia.org/wiki/Proportional_control
 
             # Linear velocity in the x-axis.
-            if self.linear_vel(self.goal_pose) > 0.5:
+            if self.linear_vel(self.goal_pose) > 1:
                 vel_msg.linear.x = 0.5
                 vel_msg.linear.y = 0
                 vel_msg.linear.z = 0
+                
+                # Angular Velocity in the z-axis.
+                vel_msg.linear.y = erroAngle
+                if(erroAngle > self._pi): 
+                     erroAngle -= (2*(self._pi))
+                elif (erroAngle < -self._pi): 
+                    erroAngle += (2*(self._pi))
 
-                # Angular velocity in the z-axis.
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = self.angular_vel(self.goal_pose)*0.5
+                vel_msg.angular.z = erroAngle
 
                 # Publishing our vel_msg
                 self.velocity_publisher.publish(vel_msg)
@@ -84,10 +89,14 @@ class Jackal():
                 vel_msg.linear.y = 0
                 vel_msg.linear.z = 0
 
-                # Angular velocity in the z-axis.
-                vel_msg.angular.x = 0
-                vel_msg.angular.y = 0
-                vel_msg.angular.z = self.angular_vel(self.goal_pose)*0.5
+                # Angular Velocity in the z-axis.
+                vel_msg.linear.y = erroAngle
+                if(erroAngle > self._pi): 
+                     erroAngle -= (2*(self._pi))
+                elif (erroAngle < -self._pi): 
+                    erroAngle += (2*(self._pi))
+
+                vel_msg.angular.z = erroAngle
 
                 # Publishing our vel_msg
                 self.velocity_publisher.publish(vel_msg)
