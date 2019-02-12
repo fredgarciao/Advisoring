@@ -1,0 +1,13 @@
+1 - Run ros:
+
+    roscore
+
+2- Run the simulation:
+
+    roslaunch jackal_gazebo jackal_world.launch
+
+3- Run the script
+
+    rosrun advsoring gotogoal_jackal2.py
+
+4- fun!
